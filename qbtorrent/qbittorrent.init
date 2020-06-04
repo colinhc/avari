@@ -71,6 +71,12 @@ do_start()
                 fi
         fi
 
+        # Copy desired config to location.
+        local dest_qbt_path="$AVARI_QBT_HOME/qBittorrent"
+        local dest_qbt_config_path="$dest_qbt_path/config"
+        mkdir -p "$dest_qbt_config_path" && chown -R $USER:$USER "$dest_qbt_path"
+        mv "$AVARI_QBT_HOME/qbtorrent.conf" "$dest_qbt_config_path/qBittorrent.conf"
+
         # Return
         #   0 if daemon has been started
         #   1 if daemon was already running

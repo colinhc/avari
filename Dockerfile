@@ -14,7 +14,7 @@ RUN apt-get update \
     && apt-get install -y curl vim \
     && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
 
-RUN curl -s -L https://github.com/Sylvain303/docopts/releases/download/v0.6.3-alpha1/docopts -o /usr/local/bin/docopts
+RUN curl -S -L https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_386 -o /usr/local/bin/docopts
 RUN chmod +x /usr/local/bin/docopts
 
 RUN mkdir /avari
@@ -22,7 +22,6 @@ ADD start.sh /avari/
 ADD logging /avari/
 ADD openvpn /avari/openvpn
 ADD qbtorrent /avari/qbtorrent
-RUN mkdir /avari/qbtorrent/config
 
 RUN useradd -ms /usr/sbin/nologin qbtuser
 RUN usermod -u 1002 qbtuser
@@ -33,9 +32,6 @@ ENV TERM=xterm
 ENV AVARI_HOME=/avari
 ENV AVARI_OPVN_HOME=/avari/openvpn
 ENV AVARI_QBT_HOME=/avari/qbtorrent
-# ENV LAN_NETWORK=
-# ENV PUID=
-# ENV PGID=
 
 # Expose ports Web Admin and torrent port
 EXPOSE 8080

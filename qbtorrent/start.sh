@@ -1,5 +1,4 @@
 #!/bin/bash
-chown -R ${PUID}:${PGID} $AVARI_QBT_HOME/config
 
 if [[ ! -e $AVARI_QBT_HOME/qbtorrent.conf ]]; then
 	echo "No qbtorrent.conf found!"
@@ -47,7 +46,6 @@ fi
 
 echo "[info] Starting qBittorrent daemon..." | ts '%Y-%m-%d %H:%M:%.S'
 /bin/bash $AVARI_QBT_HOME/qbittorrent.init start &
-chmod -R 755 $AVARI_QBT_HOME/config
 
 sleep 1
 qbpid=$(pgrep -o -x qbittorrent-nox)
