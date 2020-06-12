@@ -9,7 +9,6 @@ RUN apt-get update \
     && apt-get install -y software-properties-common \
     && add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable \
     && apt-get update \
-    && apt-get upgrade -y \
     && apt-get install -y qbittorrent-nox openvpn \
     && apt-get install -y net-tools iptables moreutils ipcalc kmod \
     && apt-get install -y curl vim \
