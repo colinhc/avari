@@ -2,9 +2,6 @@ FROM 9bkerzya/avari:nox AS qbtbuild
 FROM 9bkerzya/avari:base
 
 RUN apt-get update \
-    # && apt-get install -y software-properties-common \
-    # && add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable \
-    # && apt-get update && apt-get install -y qbittorrent-nox \
     && apt-get install -y openvpn \
     && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
 
