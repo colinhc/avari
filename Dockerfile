@@ -1,21 +1,18 @@
-FROM ubuntu:18.04
+FROM 9bkerzya/avari:nox AS qbtbuild
+FROM 9bkerzya/avari:base
+
+RUN apt-get update \
+    # && apt-get install -y software-properties-common \
+    # && add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable \
+    # && apt-get update && apt-get install -y qbittorrent-nox \
+    && apt-get install -y openvpn \
+    && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
+
+COPY --from=qbtbuild /usr/bin/qbittorrent-nox /usr/bin
 
 VOLUME /ovpn-files
 VOLUME /media
 VOLUME /torrents
-
-RUN apt-get update \
-    # Need software-properties-common for add-apt-repository
-    && apt-get install -y software-properties-common \
-    && add-apt-repository -y ppa:qbittorrent-team/qbittorrent-stable \
-    && apt-get update \
-    && apt-get install -y qbittorrent-nox openvpn \
-    && apt-get install -y net-tools iptables moreutils ipcalc kmod \
-    && apt-get install -y curl vim \
-    && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
-
-RUN curl -S -L https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_386 -o /usr/local/bin/docopts
-RUN chmod +x /usr/local/bin/docopts
 
 RUN mkdir /avari
 ADD start.sh /avari/
