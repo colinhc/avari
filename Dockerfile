@@ -2,6 +2,8 @@ FROM 9bkerzya/avari:nox AS qbtbuild
 FROM 9bkerzya/avari:base
 
 RUN apt-get update \
+    # Needed for qbittorrent-nox runtime.
+    && apt-get install -y libtorrent-rasterbar10 qt5-default \
     && apt-get install -y openvpn \
     && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
 
