@@ -46,7 +46,7 @@ function start_vpn() {
                 _logwarn 'DRYRUN: Starting openvpn...Cancelled'
                 exit 0
         fi
-        openvpn $selected_ovpn || exit 1 &
+        openvpn --config $selected_ovpn --mute-replay-warnings || exit 1 &
 	sleep 10 && _logwarn "$(curl -s -4 ifconfig.co) - $(curl -s -4 ifconfig.co/country-iso)"
         export_env $selected_ovpn $outfile
 }
