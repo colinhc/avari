@@ -37,18 +37,20 @@ export_env() {
 start_vpn() {
 	local ovpn_path=$1
 	local outfile=$2
-	local vpnlog='/tmp/vpn.log'
+	local vpnlog=
 	local pid=
 	for i in {0..4}; do
-		if grep -q 'Initialization Sequence Completed' $vpnlog; then
+		if [[ -n $vpnlog ]] && grep -q 'Initialization Sequence Completed' $vpnlog; then
+			_loginfo 'VPN connected!'
 			rm -f $vpnlog
 			break
 		else
 			if [[ -n $pid ]]; then pkill -P $pid; fi
-			pushd $ovpn_path
+			cd $ovpn_path
 			local selected_ovpn=$(ls *ovpn | shuf -n 1)
 			[ -z "$selected_ovpn" ] && _logerr "No ovpn found!!\n" && exit 1
 			_loginfo 'OVPN selected ' ${selected_ovpn}
+			vpnlog=$(mktemp /tmp/vpn-XXXX)
 			openvpn --config $selected_ovpn --mute-replay-warnings &> $vpnlog || exit 1 &
 			pid=$(echo $!)
 			sleep 15;
