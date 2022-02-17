@@ -50,7 +50,7 @@ start_vpn() {
 			local selected_ovpn=$(ls *ovpn | shuf -n 1)
 			[ -z "$selected_ovpn" ] && _logerr "No ovpn found!!\n" && exit 1
 			_loginfo 'OVPN selected ' ${selected_ovpn}
-			vpnlog=$(mktemp /tmp/vpn-XXXX)
+			vpnlog=$(mktemp /tmp/vpn-err-XXXX)
 			openvpn --config $selected_ovpn --mute-replay-warnings &> $vpnlog || exit 1 &
 			pid=$(echo $!)
 			sleep 15;
