@@ -12,6 +12,7 @@ COPY --from=qbtbuild /usr/bin/qbittorrent-nox /usr/bin
 VOLUME /ovpn-files
 VOLUME /media
 VOLUME /torrents
+VOLUME /tmp
 
 RUN mkdir /avari
 ADD start.sh /avari/
