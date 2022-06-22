@@ -96,7 +96,7 @@ echo "--------------------"
 #----------------------------------
 
 # Flush
-iptables -t nat -F
+# Do not flush nat: iptables -t nat -F
 iptables -t mangle -F
 iptables -F
 iptables -X
@@ -110,13 +110,24 @@ iptables -P FORWARD DROP
 # ip6tables -P INPUT DROP 1>&- 2>&-
 # ip6tables -P OUTPUT DROP 1>&- 2>&-
 
+# allow DNS UDP traffic
+iptables -A INPUT -s 127.0.0.0/24 -d 127.0.0.0/24 -p udp -j ACCEPT
+iptables -A OUTPUT -s 127.0.0.0/24 -d 127.0.0.0/24 -p udp -j ACCEPT
+iptables -A INPUT -i eth0 -d "${docker_network}" -p udp -j ACCEPT
+iptables -A OUTPUT -o eth0 -s "${docker_network}" -p udp -j ACCEPT
+# iptables -A INPUT -i "${VPN_DEVICE_TYPE}"+ -p udp --sport 53 -j ACCEPT
+# iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"+ -p udp --dport 53 -j ACCEPT
+
+# allow HTTP cURL outbound traffic
+iptables -A INPUT -i "${VPN_SERVICE_TYPE}"+ -p tcp --sport 80 -j ACCEPT
+iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"+ -p tcp --dport 80 -j ACCEPT
+
 # accept input to tunnel adapter tun
 iptables -A INPUT -i "${VPN_DEVICE_TYPE}"+ -j ACCEPT
 iptables -A FORWARD -i "${VPN_DEVICE_TYPE}"+ -j ACCEPT
 iptables -A FORWARD -o "${VPN_DEVICE_TYPE}"+ -j ACCEPT
 iptables -t nat -A POSTROUTING -o "${VPN_DEVICE_TYPE}"0 -j MASQUERADE
 iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"+ -j ACCEPT
-
 
 # accept input to/from LANs (172.x range is internal dhcp)
 iptables -A INPUT -s "${docker_network}" -d "${docker_network}" -j ACCEPT
@@ -135,10 +146,6 @@ iptables -A INPUT -i eth0 -p tcp --dport ${WEBUI_PORT} -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp --sport ${WEBUI_PORT} -j ACCEPT
 # iptables -A INPUT -i eth0 -p tcp --sport ${WEBUI_PORT} -j ACCEPT
 # iptables -A OUTPUT -o eth0 -p tcp --dport ${WEBUI_PORT} -j ACCEPT
-
-# accept input to local loopback
-# iptables -A INPUT -i lo -j ACCEPT
-# iptables -A OUTPUT -o lo -j ACCEPT
 
 # accept input icmp (ping)
 # iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
