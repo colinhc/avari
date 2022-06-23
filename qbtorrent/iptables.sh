@@ -101,11 +101,6 @@ iptables -t mangle -F
 iptables -F
 iptables -X
 
-# set policy to drop ipv4 for input
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-
 # set policy to drop ipv6 for input
 # ip6tables -P INPUT DROP 1>&- 2>&-
 # ip6tables -P OUTPUT DROP 1>&- 2>&-
@@ -115,46 +110,44 @@ iptables -A INPUT -s 127.0.0.0/24 -d 127.0.0.0/24 -p udp -j ACCEPT
 iptables -A OUTPUT -s 127.0.0.0/24 -d 127.0.0.0/24 -p udp -j ACCEPT
 iptables -A INPUT -i eth0 -d "${docker_network}" -p udp -j ACCEPT
 iptables -A OUTPUT -o eth0 -s "${docker_network}" -p udp -j ACCEPT
-# iptables -A INPUT -i "${VPN_DEVICE_TYPE}"+ -p udp --sport 53 -j ACCEPT
-# iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"+ -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -i "${VPN_DEVICE_TYPE}"0 -p udp --sport 53 -j ACCEPT
+iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"0 -p udp --dport 53 -j ACCEPT
 
-# allow HTTP cURL outbound traffic
-iptables -A INPUT -i "${VPN_SERVICE_TYPE}"+ -p tcp --sport 80 -j ACCEPT
-iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"+ -p tcp --dport 80 -j ACCEPT
-
-# accept input to tunnel adapter tun
-iptables -A INPUT -i "${VPN_DEVICE_TYPE}"+ -j ACCEPT
-iptables -A FORWARD -i "${VPN_DEVICE_TYPE}"+ -j ACCEPT
-iptables -A FORWARD -o "${VPN_DEVICE_TYPE}"+ -j ACCEPT
-iptables -t nat -A POSTROUTING -o "${VPN_DEVICE_TYPE}"0 -j MASQUERADE
-iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"+ -j ACCEPT
-
-# accept input to/from LANs (172.x range is internal dhcp)
-iptables -A INPUT -s "${docker_network}" -d "${docker_network}" -j ACCEPT
-iptables -A OUTPUT -s "${docker_network}" -d "${docker_network}" -j ACCEPT
-
-# accept input to vpn gateway
+# allow vpn gateway traffic
 iptables -A INPUT -i eth0 -p $VPN_PROTOCOL --sport $VPN_PORT -j ACCEPT
 iptables -A OUTPUT -o eth0 -p $VPN_PROTOCOL --dport $VPN_PORT -j ACCEPT
 
-# accept input to qbittorrent daemon port - used for lan access
-iptables -A INPUT -i eth0 -s "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --dport ${INCOMING_PORT} -j ACCEPT
-iptables -A OUTPUT -o eth0 -d "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --sport ${INCOMING_PORT} -j ACCEPT 
-
-# accept input to qbittorrent webui port
+# allow qbt webui port
 iptables -A INPUT -i eth0 -p tcp --dport ${WEBUI_PORT} -j ACCEPT
 iptables -A OUTPUT -o eth0 -p tcp --sport ${WEBUI_PORT} -j ACCEPT
-# iptables -A INPUT -i eth0 -p tcp --sport ${WEBUI_PORT} -j ACCEPT
-# iptables -A OUTPUT -o eth0 -p tcp --dport ${WEBUI_PORT} -j ACCEPT
+
+# allow HTTP cURL traffic
+iptables -A INPUT -i "${VPN_DEVICE_TYPE}"0 -p tcp --sport 80 -j ACCEPT
+iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"0 -p tcp --dport 80 -j ACCEPT
+
+# allow tunnel adapter tun traffic
+iptables -A INPUT -i "${VPN_DEVICE_TYPE}"0 -j ACCEPT
+iptables -t nat -A POSTROUTING -o "${VPN_DEVICE_TYPE}"0 -j MASQUERADE
+iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"0 -j ACCEPT
+# iptables -A FORWARD -i "${VPN_DEVICE_TYPE}"0 -j ACCEPT
+# iptables -A FORWARD -o "${VPN_DEVICE_TYPE}"0 -j ACCEPT
+
+# accept input to/from LANs (172.x range is internal dhcp)
+# iptables -A INPUT -s "${docker_network}" -d "${docker_network}" -j ACCEPT
+# iptables -A OUTPUT -s "${docker_network}" -d "${docker_network}" -j ACCEPT
+
+# accept input to qbittorrent daemon port - used for lan access
+# iptables -A INPUT -i eth0 -s "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --dport ${INCOMING_PORT} -j ACCEPT
+# iptables -A OUTPUT -o eth0 -d "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --sport ${INCOMING_PORT} -j ACCEPT 
 
 # accept input icmp (ping)
 # iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
 # iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
 
-# These have to be at the end.
-iptables -A OUTPUT -j DROP
-iptables -A INPUT -j DROP
-iptables -A FORWARD -j DROP
+# set policy to drop ipv4
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
 
 echo "[info] NOW iptables defined as follows..." | ts '%Y-%m-%d %H:%M:%.S'
 iptables -S
