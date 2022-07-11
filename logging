@@ -1,7 +1,7 @@
 
 _rcolor=$(tput sgr0)
 
-function _logwarn() { _yellow=$(tput setaf 3); printf "%s\n" "$_yellow[warn] $* $_rcolor" | ts "%H:%M:%.S"; }
-function _loginfo() { _green=$(tput setaf 2); printf "%s\n" "$_green[info] $* $_rcolor" | ts "%H:%M:%.S"; }
-function _logerr() { _magenta=$(tput setaf 5); printf "%s\n" "$_magenta[err] $* $_rcolor" | ts "%H:%M:%.S"; }
+_logwarn() { _yellow=$(tput setaf 3); printf "%s\n" "$_yellow[warn] $* $_rcolor" | ts "%H:%M:%.S"; }
+_loginfo() { _green=$(tput setaf 2); printf "%s\n" "$_green[info] $* $_rcolor" | ts "%H:%M:%.S"; }
+_logerr() { _magenta=$(tput setaf 5); printf "%s\n" "$_magenta[err] $* $_rcolor" | ts "%H:%M:%.S"; }
 
