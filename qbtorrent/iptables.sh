@@ -138,7 +138,7 @@ iptables -A OUTPUT -o "${VPN_DEVICE_TYPE}"0 -j ACCEPT
 
 # accept input to qbittorrent daemon port - used for lan access
 # iptables -A INPUT -i eth0 -s "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --dport ${INCOMING_PORT} -j ACCEPT
-# iptables -A OUTPUT -o eth0 -d "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --sport ${INCOMING_PORT} -j ACCEPT
+# iptables -A OUTPUT -o eth0 -d "${LAN_NETWORK}" -p ${VPN_PROTOCOL} --sport ${INCOMING_PORT} -j ACCEPT 
 
 # accept input icmp (ping)
 # iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT
