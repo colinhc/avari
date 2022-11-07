@@ -10,7 +10,7 @@ RUN apt-get update \
 RUN apt install -y software-properties-common \
     && add-apt-repository -y ppa:libtorrent.org/1.2-daily \
     && apt update \
-    && apt install -y libtorrent-rasterbar10
+    && apt install -y libtorrent-rasterbar2.0
 
 COPY --from=qbtbuild /usr/bin/qbittorrent-nox /usr/bin
 
