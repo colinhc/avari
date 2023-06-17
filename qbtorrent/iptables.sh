@@ -153,4 +153,5 @@ echo "[info] NOW iptables defined as follows..." | ts '%Y-%m-%d %H:%M:%.S'
 iptables -S
 echo "--------------------"
 
+sleep 5
 exec /bin/bash /avari/qbtorrent/start.sh
