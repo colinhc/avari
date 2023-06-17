@@ -7,5 +7,6 @@ _outfile=/tmp/vpnenv
 ./openvpn/random-vpn.sh --ovpn=/ovpn-files --out_envfile=$_outfile
 source $_outfile
 echo "Set" $(env |grep VPN_)
+sleep 5
 ./qbtorrent/iptables.sh
 sleep infinity
