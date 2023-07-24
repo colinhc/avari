@@ -1,0 +1,55 @@
+networks:
+  qbt1net:
+    name: qbt1net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.40.0.0/16
+
+services:
+  wgqbt:
+    container_name: wgqbt
+    image: linuxserver/wireguard:latest
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PGID=1002
+      - PUID=1002
+      - TZ=Europe/London
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "yahoo.com"]
+      start_period: 25s
+    networks:
+      qbt1net:
+        ipv4_address: 172.40.99.99
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      - /home/qbtuser/wgqbt:/config
+
+  qbt:
+    container_name: qbt
+    dns:
+      - 1.1.1.1
+    depends_on:
+      wgqbt:
+        condition: service_healthy
+    environment:
+      - COMPOSE_PROJECT_NAME=qbt
+      - HOST_NETWORK=192.168.193.0/24
+      - PGID=1002
+      - PUID=1002
+      - TZ=Europe/London
+      - WG_GATEWAY=172.40.99.99
+    image: 9bkerzya/avari:qbt-latest
+    networks:
+      - qbt1net
+    ports:
+      - 8080:8080
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - /usr/local/samba/content:/torrents
+      - /usr/local/samba/content/movies:/media
+      - /tmp:/tmp
