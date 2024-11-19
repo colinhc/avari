@@ -1,4 +1,4 @@
-FROM 9bkerzya/avari:nox AS qbtbuild
+FROM 9bkerzya/avari:nox-latest AS qbtbuild
 FROM 9bkerzya/avari:base
 
 RUN apt-get update \
