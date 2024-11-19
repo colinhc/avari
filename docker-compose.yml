@@ -42,7 +42,7 @@ services:
       - PUID=1002
       - TZ=Europe/London
       - WG_GATEWAY=172.40.99.99
-    image: 9bkerzya/avari:qbt-latest
+    image: 9bkerzya/avari:qbt
     networks:
       - qbt1net
     ports:
