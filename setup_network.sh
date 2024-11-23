@@ -4,6 +4,9 @@
 #   $HOST_NETWORK
 #   $WG_GATWAY
 
+# Credits:
+# https://www.linuxserver.io/blog/routing-docker-host-and-container-traffic-through-wireguard
+
 source logging
 
 DEFAULT_GATEWAY=$(ip route show | grep default | awk '{print $3}')
