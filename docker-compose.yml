@@ -30,8 +30,6 @@ services:
 
   qbt:
     container_name: qbt
-    dns:
-      - 1.1.1.1
     depends_on:
       wgqbt:
         condition: service_healthy

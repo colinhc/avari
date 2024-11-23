@@ -21,11 +21,18 @@ VOLUME /media
 VOLUME /torrents
 VOLUME /tmp
 
-RUN mkdir /avari
-ADD setup_network.sh /avari/
-ADD start.sh /avari/
-ADD logging /avari/
-ADD qbtorrent /avari/qbtorrent
+WORKDIR /avari
+COPY setup_network.sh .
+COPY start.sh .
+COPY logging .
+COPY qbtorrent/ ./qbtorrent/
+
+RUN MONTH=$(date +%Y-%m) \
+    && curl -L https://download.db-ip.com/free/dbip-country-lite-$MONTH.mmdb.gz \
+        -o ./dbip-country-lite.mmdb.gz \
+    && gzip -d /avari/dbip-country-lite.mmdb.gz \
+    && mkdir -p /avari/qbtorrent/qBittorrent/data/GeoDB \
+    && mv /avari/dbip-country-lite.mmdb /avari/qbtorrent/qBittorrent/data/GeoDB
 
 RUN useradd -ms /usr/sbin/nologin qbtuser
 RUN usermod -u 1002 qbtuser
