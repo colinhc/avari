@@ -18,7 +18,7 @@ services:
       - PUID=1002
       - TZ=Europe/London
     healthcheck:
-      test: ["CMD", "curl", "-sf", "yahoo.com"]
+      test: curl -sf http://yahoo.com || exit 1
       start_period: 25s
     networks:
       qbt1net:
@@ -40,6 +40,9 @@ services:
       - PUID=1002
       - TZ=Europe/London
       - WG_GATEWAY=172.40.99.99
+    healthcheck:
+      test: curl -sf http://ifconfig.co/asn | grep -v AS7922 || exit 1
+      start_period: 25s
     image: 9bkerzya/avari:qbt
     networks:
       - qbt1net
