@@ -16,10 +16,14 @@ ip route del default
 ip route add default via "$WG_GATEWAY"
 ip route add "$HOST_NETWORK" via "$DEFAULT_GATEWAY"
 
+QBT1NET=$(ip route show | grep "kernel" | awk '{print $1}')
+WEBUI_PORT=$(cat qbtorrent/qbtorrent.conf | grep 'WebUI\\Port' | awk -F'=' '{print $2}')
+
 ufw default deny incoming
 ufw default allow outgoing
 ufw deny out to "$HOST_NETWORK"
 ufw allow in from "$HOST_NETWORK"
+ufw allow in from "$QBT1NET" to any port "$WEBUI_PORT" proto tcp
 ufw enable
 
 while : ; do
