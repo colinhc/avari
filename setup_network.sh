@@ -11,6 +11,7 @@ source logging
 
 DEFAULT_GATEWAY=$(ip route show | grep default | awk '{print $3}')
 UNEXPECTED_IP=$(curl -s ifconfig.co)
+WEBUI_PORT=$(cat qbtorrent/qbtorrent.conf | grep 'WebUI\\Port' | awk -F'=' '{print $2}')
 
 ip route del default
 ip route add default via "$WG_GATEWAY"
@@ -20,6 +21,7 @@ ufw default deny incoming
 ufw default allow outgoing
 ufw deny out to "$HOST_NETWORK"
 ufw allow in from "$HOST_NETWORK"
+ufw allow in from "$DEFAULT_GATEWAY" to any port "$WEBUI_PORT" proto tcp
 ufw enable
 
 while : ; do
