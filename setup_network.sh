@@ -2,6 +2,7 @@
 
 # Pre-defined env variables:
 #   $HOST_NETWORK
+#   $QBT_WEBUI_PORT
 #   $WG_GATWAY
 
 # Credits:
@@ -9,19 +10,19 @@
 
 source logging
 
-DEFAULT_GATEWAY=$(ip route show | grep default | awk '{print $3}')
+SUBNET=$(ip route show | grep "eth0 proto" | awk -F'/' '{print $1}')
+SUBNET_GATEWAY=$(ip route show | grep default | awk '{print $3}')
 UNEXPECTED_IP=$(curl -s ifconfig.co)
-WEBUI_PORT=$(cat qbtorrent/qbtorrent.conf | grep 'WebUI\\Port' | awk -F'=' '{print $2}')
 
 ip route del default
 ip route add default via "$WG_GATEWAY"
-ip route add "$HOST_NETWORK" via "$DEFAULT_GATEWAY"
+ip route add "$HOST_NETWORK" via "$SUBNET_GATEWAY"
 
 ufw default deny incoming
 ufw default allow outgoing
 ufw deny out to "$HOST_NETWORK"
 ufw allow in from "$HOST_NETWORK"
-ufw allow in from "$DEFAULT_GATEWAY" to any port "$WEBUI_PORT" proto tcp
+ufw allow in from "$SUBNET"/28 to any port "$QBT_WEBUI_PORT" proto tcp
 ufw enable
 
 while : ; do

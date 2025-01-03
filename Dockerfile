@@ -41,9 +41,7 @@ RUN chmod +x /avari/*.sh /avari/qbtorrent/*.init /avari/qbtorrent/*.sh
 
 ENV TERM=xterm
 ENV AVARI_QBT_HOME=/avari/qbtorrent
-
-# Expose WebUI port.
-EXPOSE 8080
+ENV QBT_WEBUI_PORT=8080
 
 WORKDIR /avari
 

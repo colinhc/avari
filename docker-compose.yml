@@ -38,6 +38,7 @@ services:
       - HOST_NETWORK=192.168.193.0/24
       - PGID=1002
       - PUID=1002
+      - QBT_WEBUI_PORT=8080
       - TZ=Europe/London
       - WG_GATEWAY=172.40.99.99
     healthcheck:
