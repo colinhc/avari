@@ -1,3 +1,4 @@
+version: "3"
 networks:
   qbt1net:
     name: qbt1net
@@ -18,7 +19,7 @@ services:
       - PUID=1002
       - TZ=Europe/London
     healthcheck:
-      test: curl -sf http://yahoo.com || exit 1
+      test: curl -sf http://ifconfig.co/asn | grep -v AS7922 || exit 1
       start_period: 25s
     networks:
       qbt1net:
@@ -55,3 +56,17 @@ services:
       - /usr/local/samba/content:/torrents
       - /usr/local/samba/content/movies:/media
       - /tmp:/tmp
+
+  qbtmon:
+    container_name: qbtmon
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+      - AUTOHEAL_INTERVAL=5
+      - AUTOHEAL_ONLY_MONITOR_RUNNING=true
+      - AUTOHEAL_START_PERIOD=30
+    image: willfarrell/autoheal:latest
+    networks:
+      - qbt1net
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
