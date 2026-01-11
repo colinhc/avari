@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:25.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
@@ -6,6 +6,7 @@ RUN apt-get update \
         curl dnsutils gzip iputils-ping traceroute tree vim \
     && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
 
-RUN curl -S -L https://github.com/docopt/docopts/releases/download/v0.6.3-rc2/docopts_linux_386 -o /usr/local/bin/docopts
+RUN curl -S -L https://github.com/docopt/docopts/releases/download/v0.6.4-with-no-mangle-double-dash/docopts_linux_386 \
+    -o /usr/local/bin/docopts
 RUN chmod +x /usr/local/bin/docopts
 

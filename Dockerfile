@@ -3,18 +3,16 @@ FROM 9bkerzya/avari:base
 
 RUN apt-get update \
     # Needed for qbittorrent-nox runtime.
-    && apt-get install -y libqt5network5 libqt5sql5 libqt5xml5 python3 \
+    && apt-get install -y libqt6network6 libqt6sql6 libqt6xml6 \
+    && python3 \
     && apt-get clean && rm -rf /var/lib/opt/lists/* /tmp/* /var/tmp/*
 
-RUN apt install -y software-properties-common \
-    && add-apt-repository -y ppa:libtorrent.org/1.2-daily \
-    && apt update \
-    && apt install -y libtorrent-rasterbar2.0 libtorrent-rasterbar10
+RUN apt install -y libtorrent-rasterbar-dev
 
 # Network
 RUN apt install -y iproute2 ufw
 
-COPY --from=qbtbuild /usr/bin/qbittorrent-nox /usr/bin
+COPY --from=qbtbuild /usr/local/bin/qbittorrent-nox /usr/bin
 
 VOLUME /ovpn-files
 VOLUME /media
