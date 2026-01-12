@@ -45,7 +45,7 @@ services:
     healthcheck:
       test: curl -sf http://ifconfig.co/asn | grep -v AS7922 || exit 1
       start_period: 25s
-    image: 9bkerzya/avari:qbt-5.1.4
+    image: 9bkerzya/avari:qbt
     networks:
       - qbt1net
     ports:
