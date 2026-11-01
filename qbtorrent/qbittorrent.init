@@ -74,9 +74,11 @@ do_start()
         # Copy desired config to location.
         local dest_qbt_path="$AVARI_QBT_HOME/qBittorrent"
         local dest_qbt_config_path="$dest_qbt_path/config"
+        local dest_qbt_data_path="$dest_qbt_path/data"
         mkdir -p "$dest_qbt_config_path" && chown -R $USER:$USER "$dest_qbt_path"
         cp --update=none "$AVARI_QBT_HOME/qbtorrent.conf" "$dest_qbt_config_path/qBittorrent.conf"
         cp --update=none "$AVARI_QBT_HOME/watched_folders.json" "$dest_qbt_config_path/watched_folders.json"
+        cp --update=none "$AVARI_QBT_HOME/web_clientdata.json" "$dest_qbt_data_path/web_clientdata.json"
 
         # Return
         #   0 if daemon has been started
